@@ -23,6 +23,7 @@ async function run() {
     const productsCollection = database.collection("products");
     const usersCollection = database.collection("users");
     const feedbackCollection = database.collection("feedback");
+    const ordersCollection = database.collection("orders");
 
     //Get All Products
     app.get("/products", async (req, res) => {
@@ -86,6 +87,12 @@ async function run() {
       const product = await productsCollection.insertOne(newProduct);
       res.json(product);
     });
+    //Get All Orders
+    app.get("/orders", async (req, res) => {
+        const cursor = await ordersCollection.find({});
+        const allOrders = await cursor.toArray();
+        res.send(allOrders);
+      });
   } finally {
     // await client.close();
   }
