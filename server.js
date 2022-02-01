@@ -22,6 +22,7 @@ async function run() {
     const database = client.db("dash-door");
     const productsCollection = database.collection("products");
     const usersCollection = database.collection("users");
+    const feedbackCollection = database.collection("feedback");
 
     //Get All Products
     app.get("/products", async (req, res) => {
@@ -71,6 +72,19 @@ async function run() {
       const cursor = await usersCollection.find({});
       const allUsers = await cursor.toArray();
       res.send(allUsers);
+    });
+    //Get All Reviews
+    app.get("/feedback", async (req, res) => {
+      const cursor = await feedbackCollection.find({});
+      const allReviews = await cursor.toArray();
+      res.send(allReviews);
+    });
+    //Add Product Api
+    app.post("/products", async (req, res) => {
+      const newProduct = req.body;
+      console.log(newProduct);
+      const product = await productsCollection.insertOne(newProduct);
+      res.json(product);
     });
   } finally {
     // await client.close();
