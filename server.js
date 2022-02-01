@@ -89,9 +89,43 @@ async function run() {
     });
     //Get All Orders
     app.get("/orders", async (req, res) => {
-        const cursor = await ordersCollection.find({});
-        const allOrders = await cursor.toArray();
-        res.send(allOrders);
+      const cursor = await ordersCollection.find({});
+      const allOrders = await cursor.toArray();
+      res.send(allOrders);
+    });
+    //Get Single Order
+    app.get("/orders/:id", async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: ObjectId(id) };
+        const singleOrder = await ordersCollection.findOne(query);
+        res.json(singleOrder);
+      });
+    //Update Single Watch
+    app.put("/orders/:id", async (req, res) => {
+        const id = req.params.id;
+        const updatedOrder = req.body;
+        console.log(updatedOrder);
+        const filter = { _id: ObjectId(id) };
+        const options = { upsert: true };
+        const updateDoc = {
+          $set: {
+            status: updatedOrder.status,
+          },
+        };
+        const result = await ordersCollection.updateOne(
+          filter,
+          updateDoc,
+          options
+        );
+        res.send(result);
+      });
+    //Delete single item from orders Api
+    app.delete("/orders/:id", async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: ObjectId(id) };
+        const result = await ordersCollection.deleteOne(query);
+        console.log(result);
+        res.json(result);
       });
   } finally {
     // await client.close();
