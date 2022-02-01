@@ -28,6 +28,13 @@ async function run() {
       const allProducts = await cursor.toArray();
       res.send(allProducts);
     });
+     //Get Single single
+     app.get("/products/:id", async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: ObjectId(id) };
+        const singleProduct = await products.findOne(query);
+        res.json(singleProduct);
+      });
    
   } finally {
     // await client.close();
